@@ -1,11 +1,13 @@
 <?php
-
 /**
  * 
  * @author: Min Nam
  * Log class read, writes, and output a .log file to HTML Tag.   
  * 
 **/
+
+namespace VEC;
+
 class Log{
 		
 		const PATH_TO_LOG = "./a.log";
@@ -15,7 +17,9 @@ class Log{
 			return file_get_contents( self::PATH_TO_LOG );
 
 		}
-
+		/**
+		 * Various validations in case of Proxy.
+		**/
 		public function write( $from, $descrption = "" ) {
 
 			$date      = date( "Y-m-d\TH:i:s" );
@@ -91,6 +95,7 @@ class Log{
 
 			} else {
 
+				// Error reading file
 
 			}
 

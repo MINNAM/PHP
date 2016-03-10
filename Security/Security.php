@@ -3,15 +3,18 @@
  * 
  * @author: Min Nam
  * 
- * General Security Class for Application Form.
+ * General security implementation for Application Form.
  * 
 **/
-
 require_once( "Log.php" );
+
+namespace VEC;
+
+use VEC;
 
 class Security{
 	
-	const SECURITY_PHRASE 		= "SOME RANDOM PHRASE"; 
+	const SECURITY_PHRASE 		= "SOME RANDOM PHRASE"; // This could be changed daily and retrived from db to be more secure. 
 	const SUBMIT_LIMIT    		= 3;
 	const SUBMIT_PENALTY  		= 500;
 	const SUBMIT_PENALTY_LIMIT  = 86400000;
@@ -24,9 +27,14 @@ class Security{
 
 	}
 
+	public static function getSecurityPhrase() {
+
+		
+	}
+
 	/**
 	 * 
-	 * Starts session and complicates possible attempts on Session Hijacking.
+	 * Starts session and complicates possible Session Hijacking attempts.
 	 * 
 	 * ex.
 	 * 
