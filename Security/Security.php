@@ -8,28 +8,44 @@
 **/
 require_once( "Log.php" );
 
-namespace VEC;
-
-use VEC;
-
 class Security{
 	
-	const SECURITY_PHRASE 		= "SOME RANDOM PHRASE"; // This could be changed daily and retrived from db to be more secure. 
+	const SECURITY_PHRASE 		= "SOME RANDOM PHRASE"; // This could be changed daily and retrived from db to be more secure. Line 26
 	const SUBMIT_LIMIT    		= 3;
 	const SUBMIT_PENALTY  		= 500;
 	const SUBMIT_PENALTY_LIMIT  = 86400000;
 	
-	private static $LOG;
+	private static $instance;
+	private static $log;
+	
+	public static function getInstance() {
 
-	public static function init() {
+		if( self::$instance === null ) {
 
-		self::$LOG = new Log();
+			self::$instance = new self();
+
+		}
+
+		return self::$instance;
 
 	}
 
-	public static function getSecurityPhrase() {
+	protected function __construct() {
 
-		
+		self::$log = Log::getInstance();
+
+	}
+
+	private function __clone() {}
+	private function __wakeup() {}
+
+
+	private function getSecurityPhrase() {}
+
+	public static function getLog() {
+
+		return self::$log;
+
 	}
 
 	/**
@@ -41,7 +57,7 @@ class Security{
 	 * Security::startSession(); // ON TOP OF A PHP CODE
 	 * 
 	**/
-	public static function startSession() {
+	public function startSession() {
 
 		session_start();
 
@@ -75,7 +91,7 @@ class Security{
 
 	}
 
-	public static function destroySession() {
+	public function destroySession() {
 
 		$_SESSION = array();
 
@@ -101,7 +117,7 @@ class Security{
 	 * echo Security::sanitizeData( "\<h1>John Cage</h1>  " ) // John Cage
 	 * 
 	**/
-	public static function sanitizeData( $data, $encoding = "UTF-8" ) {
+	public function sanitizeData( $data, $encoding = "UTF-8" ) {
 
 		$data = trim( $data );
 		$data = stripslashes( $data );
@@ -113,10 +129,10 @@ class Security{
 
 	/**
 	 * 
-	 * Cleans email input, filter_var supported after PHP 5.2
+	 * Cleans email input
 	 * 
 	**/
-	public static function sanitizeEmail( $email ) {
+	public function sanitizeEmail( $email ) {
 
 		return filter_var( $email, FILTER_SANITIZE_EMAIL );
 
@@ -132,7 +148,7 @@ class Security{
 	 * Security::validateEmail( "design3!vec.ca" ) // false
 	 * 
 	**/
-	public static function validateEmail( $email ) {
+	public function validateEmail( $email ) {
 
 		return !filter_var( $email, FILTER_VALIDATE_EMAIL ) === false;
 
@@ -157,7 +173,7 @@ class Security{
 	 * Security::resetToken();
 	 * 
 	**/
-	public static function generateToken( $part, $key = null ) {
+	public function generateToken( $part, $key = null ) {
 
 		if( isset( $key ) ){
 
@@ -172,7 +188,7 @@ class Security{
 
 	}
 
-	public static function validateToken( $part, $token ) {
+	public function validateToken( $part, $token ) {
 
 		if( !isset( $_SESSION[ $part ] ) ) {
 
@@ -191,12 +207,13 @@ class Security{
 			self::$LOG->write( __METHOD__, "Session not set." );
 
 			return false;
+
 		}
 		
 
 	}
 
-	public static function resetToken( $part ) {
+	public function resetToken( $part ) {
 
 		unset( $_SESSION[ $part ] );
 
@@ -210,7 +227,7 @@ class Security{
 	 * Need to change session to cookie
 	 * 
 	**/ 
-	public static function countSubmit() {
+	public function countSubmit() {
 
 		$submitAttempts = $_SESSION[ "submitAttempts" ];
 
@@ -228,7 +245,5 @@ class Security{
 	}
 
 }
-
-Security::init();
 
 ?>

@@ -6,11 +6,26 @@
  * 
 **/
 
-namespace VEC;
-
 class Log{
 		
 		const PATH_TO_LOG = "./a.log";
+
+		private static $instance;
+
+		public static function getInstance() {
+
+			if( self::$instance === null ) {
+
+				self::$instance = new self();
+			}
+
+			return self::$instance;
+
+		}
+
+		protected function __construct() {}
+		private   function __clone() {}
+		private   function __wakeup() {}		
 
 		public function read() {
 
@@ -56,8 +71,7 @@ class Log{
 
 	        }
 	        
-			$log  = "$date, $clientIP, $from, $descrption\n";
-			$log .= $this->read();
+			$log  = "$date, $clientIP, $from, $descrption\n" . $this->read();
 
 			file_put_contents( self::PATH_TO_LOG, $log );
 
